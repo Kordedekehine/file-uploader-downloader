@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import upload.download.ResponseData;
 import upload.download.entity.AttachedFile;
+import upload.download.exception.*;
 import upload.download.service.AttachedService;
 
 @RestController
@@ -20,7 +21,7 @@ public class AttachedController {
     private AttachedService attachedService;
 
     @PostMapping("/upload")
-   public ResponseData upload(@RequestParam ("file")MultipartFile file) throws Exception{
+   public ResponseData upload(@RequestParam ("file")MultipartFile file) throws CannotSaveFileException, FullStorageException,InvalidPathException{
        AttachedFile attachedFile = null;
        String downloadURL = " ";
        attachedFile = attachedService.saveAttachedFiles(file);
@@ -34,7 +35,7 @@ public class AttachedController {
    }
 
    @GetMapping("/download/{fileId}")
-    public ResponseEntity<Resource> download(@PathVariable ("fileId") String fileId) throws Exception {
+    public ResponseEntity<Resource> download(@PathVariable ("fileId") String fileId) throws EmptyFileException, CorruptFileException, InvalidPathException{
         AttachedFile attachedFile = null;
         attachedFile = attachedService.getAttachedFiles(fileId);
         return  ResponseEntity.ok()
