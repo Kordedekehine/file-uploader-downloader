@@ -20,9 +20,16 @@ public class AttachedFile {
     private String id;
 
     private String fileName;
-    private String fileType;
+    private String fileType; //is it video, audio or just file
 
-    @Lob //we need lob for easy persistence
+    /**
+     * Lob means large object
+     * CLOB – Character Large Object will store large text data
+     * BLOB – Binary Large Object is for storing binary data like image, audio, or video
+     * The @Lob annotation specifies that the database should store the property as Large Object
+     */
+;
+    @Lob //we need lob for easy persistence..
     private byte[] data; //based on the fact that we will be storing the entire byte in the database
 
     public AttachedFile(String fileName, String fileType, byte[] data) {

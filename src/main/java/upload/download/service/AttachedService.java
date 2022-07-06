@@ -9,4 +9,6 @@ public interface AttachedService {
     AttachedFile saveAttachedFiles(MultipartFile file) throws CannotSaveFileException, FullStorageException,InvalidPathException;
 
     AttachedFile getAttachedFiles(String fileId) throws CorruptFileException, InvalidPathException, EmptyFileException;
+
+    AttachedFile findFileById(String fileId) throws CorruptFileException, InvalidPathException, EmptyFileException;
 }

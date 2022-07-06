@@ -8,6 +8,8 @@ import upload.download.entity.AttachedFile;
 import upload.download.exception.*;
 import upload.download.repository.AttachedRepository;
 
+import java.util.Optional;
+
 @Service
 public class AttachedServiceImpl implements AttachedService{
 
@@ -17,7 +19,11 @@ public class AttachedServiceImpl implements AttachedService{
 
     @Override
     public AttachedFile saveAttachedFiles(MultipartFile file) throws InvalidPathException, CannotSaveFileException, FullStorageException {
+        //Normalize the path by suppressing sequences like "path/.." and inner simple dots
+        //This implementation requires the path to be relative to the root * directory and a descendant
+        // of the root directory.It also requires the * relative path at ..
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
         try {
             if (fileName.contains("..")) {
                 throw new InvalidPathException("Filename contains invalid path sequence "
@@ -42,5 +48,15 @@ public class AttachedServiceImpl implements AttachedService{
                 .findById(fileId)
                 .orElseThrow(
                         () -> new EmptyFileException ("File not found with Id: " + fileId));
+    }
+
+    @Override
+    public AttachedFile findFileById(String fileId) throws CorruptFileException, InvalidPathException, EmptyFileException {
+        Optional<AttachedFile> specificFile = attachedRepository.findById(fileId);
+        if (specificFile.isEmpty()){
+            throw new EmptyFileException("File does not exist with Id ");
+        }
+        AttachedFile realFile = specificFile.get();
+        return realFile;
     }
 }

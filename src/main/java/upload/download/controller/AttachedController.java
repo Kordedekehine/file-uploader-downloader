@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class AttachedController {
        return new ResponseData(attachedFile.getFileName(),
                downloadURL,
                file.getContentType(),
-               file.getSize());
+               file.getSize()); //todo why must i upload to download?
    }
 
    @GetMapping("/download/{fileId}")
@@ -44,5 +45,17 @@ public class AttachedController {
                         "attached file; filename=\"" + attachedFile.getFileName()
                                 + "\"")
                 .body(new ByteArrayResource(attachedFile.getData()));
+    }
+
+    @GetMapping("/search/{fileId}")
+    public ResponseEntity<?> search(@PathVariable ("fileId") String fileId) throws EmptyFileException, CorruptFileException, InvalidPathException{
+        try {
+            AttachedFile attachedFile = null;
+            //attachedFile = attachedService.getAttachedFiles(fileId);
+            return new ResponseEntity<>(attachedService.findFileById(fileId), HttpStatus.OK);
+        }
+        catch (EmptyFileException exception){
+            return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
     }
 }

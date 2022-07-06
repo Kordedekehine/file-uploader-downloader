@@ -11,6 +11,6 @@ public class ResponseData {
 
     private String fileName;
     private String downloadURL;
-    private String fileType;
+    private String fileType; //is it video, audio or just file
     private long fileSize;
 }
